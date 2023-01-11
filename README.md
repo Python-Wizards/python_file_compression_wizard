@@ -1,6 +1,7 @@
 # CompressorWiz
 Group Project for a File Compression/Decompression using Python Language with TKinker GUI frontend.
-Members : 
+<br>
+## Members : 
 - Gwen Regulacion
 - Angela Gallo
 - John Paul Marfil
