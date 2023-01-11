@@ -8,7 +8,7 @@ import zipfile
 def compress_file(file_name):
 
     # Initialize the compression parameters
-    with zipfile.ZipFile('test.zip', 'w') as zip:
+    with zipfile.ZipFile('test.zip', 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zip:
         # Compress based on the file name provided
         zip.write(file_name)
 
