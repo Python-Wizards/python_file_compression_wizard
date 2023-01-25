@@ -9,7 +9,7 @@ prog_ver="0.2Beta"
 # Import front-end framework
 import customtkinter as gui
 import tkinter as gui_legacy
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from tkinter.filedialog import askopenfilename
 # Import "zipfile" and "os" module from python
 import zipfile                                                                                     
@@ -21,6 +21,7 @@ gui.set_default_color_theme("dark-blue")
 filesrc=""
 filenm=""
 zipnm=""
+levels = 9
 
 def file_browser(event=None):
     frame_status.configure(text="No action selected.\n\n\n")
@@ -37,7 +38,7 @@ def file_browser(event=None):
 # compress_file definition/function
 def compress_file(filesrc):
     # Initialize the compression parameters
-    with zipfile.ZipFile(zipnm, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zip:
+    with zipfile.ZipFile(zipnm, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=levels) as zip:
         # Compress based on the file name provided
         zip.write(filesrc, arcname=filenm)
         # display original file size definition/function
@@ -111,18 +112,23 @@ def submit_compression_level(level):
     if level < 1 or level > 9:
         messagebox.showerror("Error", "Invalid compression level")
     else:
-        # do something with the valid level
-        print(f"The compression level is {level}")        
+        global levels
+        levels = level
+        return levels
 
 def help():
     style = ttk.Style()
     style.theme_use("alt")
-    compression_level_window = gui_legacy.Toplevel(master=window)
+    with open('README.md','r') as f:
+        help = f.read()
+    compression_level_window = gui.CTkToplevel(window)
     compression_level_window.configure(bg = '#1a1a1a')
     compression_level_window.geometry("400x250+200+200")
     compression_level_window.transient(master=window)
     compression_level_window.grab_set()
-    compression_level_window.title("Help") 
+    compression_level_window.title("Help")
+    help_label = gui.CTkLabel(compression_level_window, text=" " + help)
+    help_label.grid(row=0, column=0, padx=25, pady=31)
 
 #side bar button
 frame = gui.CTkFrame(master=window, width=160, corner_radius=0)
