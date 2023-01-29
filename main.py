@@ -4,16 +4,13 @@
 
 # Declare important program variables
 prog_nm="CompressorWiz"
-prog_ver="0.2Beta"
+prog_ver="0.3RC"
 
 # Import front-end framework
 import customtkinter as gui
-import tkinter as gui_legacy
-from tkinter import ttk, messagebox
 from tkinter.filedialog import askopenfilename
-# Import "zipfile" and "os" module from python
-import zipfile                                                                                     
-import os
+# Import "zipfile","datetime" and "os" module from python
+import zipfile,datetime,os
 
 # Set GUI theme
 gui.set_appearance_mode("dark")
@@ -21,7 +18,8 @@ gui.set_default_color_theme("dark-blue")
 filesrc=""
 filenm=""
 zipnm=""
-levels = 9
+levels = 5
+tmp= 5
 
 def file_browser(event=None):
     frame_status.configure(text="No action selected.\n\n\n")
@@ -38,23 +36,24 @@ def file_browser(event=None):
 # compress_file definition/function
 def compress_file(filesrc):
     # Initialize the compression parameters
-    with zipfile.ZipFile(zipnm, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=levels) as zip:
-        # Compress based on the file name provided
-        zip.write(filesrc, arcname=filenm)
-        # display original file size definition/function
-        def display_filesize(filesrc):
-            ogfilesize = (os.path.getsize(filesrc)) / 1024
-            ogfilesize = round(ogfilesize, 2)
-            ogfile = str(ogfilesize)
-            return ogfile
-        # display compressed file size definition/function
-        def display_compressedfilesize(zipnm):
-            compfilesize = (os.path.getsize(zipnm)) / 1024
-            compfilesize = round(compfilesize, 2)
-            compfile = str(compfilesize)
-            return compfile
-    ogfile = display_filesize(filenm)
-    compfile = display_compressedfilesize(zipnm)
+    if levels<1.0:
+        with zipfile.ZipFile(zipnm, 'w') as zip:
+            # Compress based on the file name provided
+            zip.write(filesrc, arcname=filenm)
+            # display original file size definition/function
+    else:
+        with zipfile.ZipFile(zipnm, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=int(levels)) as zip:  
+             # Compress based on the file name provided  
+             zip.write(filesrc, arcname=filenm)  
+    # display original file size definition/function  
+    ogfilesize = (os.path.getsize(filesrc)) / 1024  
+    ogfilesize = round(ogfilesize, 2)  
+    ogfile = str(ogfilesize)  
+    # display compressed file size definition/function  
+    compfilesize = (os.path.getsize(zipnm)) / 1024
+    compfilesize = round(compfilesize, 2)
+    compfile = str(compfilesize)
+
     frame_status.configure(text="Original file size is " + ogfile + "Kb" + "\n Compressed file size is "+compfile+"Kb.\n")
     button_exit.grid(row= 3, column=0,padx=50, pady=31)
 
@@ -64,6 +63,7 @@ def decompress_file():
     with zipfile.ZipFile(zipnm, 'r') as zip:
         # Decompress the file name provided to a folder named "extracted"
         zip.extractall(path="extracted")
+        frame_status.configure(text="ZIP extracted at folder ''extracted''.")
 
 # GUI Start
 window = gui.CTk()
@@ -71,85 +71,85 @@ log_font = gui.CTkFont(family="Terminal", size=10)
 window.geometry("495x320")
 window.title(prog_nm+"-("+prog_ver+")")
 
-def compress():
-        header_compress = gui.CTkLabel(master=frame_Log, text="Correct")
-        header_compress.grid(row=1, column = 0)
-
-def option(value):
-    print("segmented button clicked:", value)
-
 def command_function(value):
         if value == "  Compression level   ":
-          Compression_lvl()
+            Compression_lvl()
+            button_option.set("None")
         elif value == "  Help  ":
-          help()
+            prog_help()
+            button_option.set("None")
 
 def Compression_lvl():
-    style = ttk.Style()
-    style.theme_use("alt")
-    compression_level_window = gui_legacy.Toplevel(master=window)
-    compression_level_window.configure(bg = '#1a1a1a')
-    compression_level_window.geometry("400x250+200+200")
-    compression_level_window.transient(master=window)
-    compression_level_window.grab_set()
-    compression_level_window.title("Compression Level")
-    # create a label
-    label = gui_legacy.Label(master=compression_level_window, text="Enter the compression level (1-9):")
-    label.grid(row=0, column=0, padx=20, pady=20)
-    # create an entry widget
-    entry = gui_legacy.Entry(master=compression_level_window)
-    entry.grid(row=1, column=0, padx=0, pady=0)
-    # create a submit button
-    submit_button = gui_legacy.Button(master=compression_level_window, text="Submit", command=lambda: submit_compression_level(entry.get()))
-    submit_button.grid(row=2, column=0, padx=15, pady=15)
-    # add a close button
-    close_button = gui_legacy.Button(master=compression_level_window, text="Close", command=compression_level_window.destroy)
-    close_button.grid(row=3, column=0, padx=15, pady=15)
-    compression_level_window.columnconfigure(0, weight=1)
-
-def submit_compression_level(level):
-    level = int(level)
-    if level < 1 or level > 9:
-        messagebox.showerror("Error", "Invalid compression level")
-    else:
-        global levels
-        levels = level
-        return levels
-
-def help():
-    style = ttk.Style()
-    style.theme_use("alt")
-    with open('README.md','r') as f:
-        help = f.read()
     compression_level_window = gui.CTkToplevel(window)
     compression_level_window.configure(bg = '#1a1a1a')
-    compression_level_window.geometry("400x250+200+200")
-    compression_level_window.transient(master=window)
-    compression_level_window.grab_set()
-    compression_level_window.title("Help")
-    help_label = gui.CTkLabel(compression_level_window, text=" " + help)
+    compression_level_window.title("Compression Level")
+    compression_level_window.resizable(False,False) 
+
+    def slider_val(value): 
+            global tmp
+            tmp=value
+            level.configure(text="Current value : "+str(int(tmp)))
+
+    def submit_compression_level():
+        global tmp
+        global levels
+        levels = tmp
+        print("levels : ",levels)
+        compression_level_window.destroy()
+        compression_level_window.update()
+
+    compress_text = gui.CTkLabel(master=compression_level_window, text="Enter the compression level (0-9):")
+    compress_text.grid(row=0, column=2, padx=20, pady=0)
+    compress_note = gui.CTkLabel(master=compression_level_window, text="Note that value 0 means no compression. Default is 5.\n")
+    compress_note.grid(row=1, column=2, padx=20, pady=0)
+    level=gui.CTkLabel(master=compression_level_window, text="Current Value : 5")
+    level.grid(row=2, column=2, padx=20, pady=0)
+    compress_slider = gui.CTkSlider(compression_level_window, from_=0, to=9, number_of_steps=9,command=slider_val)
+    compress_slider.grid(row=4, column=2, padx=20, pady=0, sticky="ew")
+    compress_button = gui.CTkButton(compression_level_window, text="Submit", command=submit_compression_level)
+    compress_button.grid(row=7, column=2,padx=10, pady =10)
+
+def prog_help():
+    with open('README.md','r') as f:
+        help = f.read()
+    help_window = gui.CTkToplevel(window)
+    help_window.configure(bg = '#1a1a1a')
+    help_window.title("Help")
+    help_window.resizable(False,False)
+    help_label = gui.CTkLabel(help_window, text=" " + help)
     help_label.grid(row=0, column=0, padx=25, pady=31)
 
-#side bar button
-frame = gui.CTkFrame(master=window, width=160, corner_radius=0)
-frame.grid(row=1, column = 0,padx=20, pady=10)
+def explore(zip_name):
+    explore_window = gui.CTkToplevel(window)
+    explore_window.configure(bg = '#1a1a1a')
+    explore_window.title("Explore")
+    explore_window.resizable(False,False)
+    with zipfile.ZipFile(zip_name, mode="r") as archive:
+        for info in archive.infolist():
+            print(f"Filename: {info.filename}")
+            print(f"Modified: {datetime.datetime(*info.date_time)}")
+            print(f"Normal size: {info.file_size} bytes")
+            print(f"Compressed size: {info.compress_size} bytes")
+    explore_text = gui.CTkLabel(master=explore_window, text="None")
+    explore_text.grid(row=0, column=2, padx=20, pady=0)
 
+#side bar buttons
+frame = gui.CTkFrame(master=window, height=220, width=160, corner_radius=0)
+frame.grid(row=1, column = 0,padx=20, pady=10)
 header = gui.CTkLabel(master=frame, text=prog_nm+"-("+prog_ver+")")
 header.grid(row=1, column = 0, padx=20, pady=10)
-
 button_select = gui.CTkButton(master = frame, text="Select File", command = file_browser)
 button_select.grid(row=3, column=0, padx=25, pady=10)
 button_compress = gui.CTkButton(master = frame, text="Compress File", command = lambda: compress_file(filesrc))
 button_compress.grid(row=4, column=0, padx=25, pady=10)
 button_extract = gui.CTkButton(master = frame, text="Extract ZIP", command = decompress_file)
 button_extract.grid(row=5, column=0,padx=25, pady =10)
-button_explore = gui.CTkButton(master = frame, text="Explore File", command = compress)
+button_explore = gui.CTkButton(master = frame, text="Explore File", command = lambda: explore(zipnm))
 button_explore.grid(row=6, column=0, padx=25, pady=10)
 
-#side bar log
-frame_Log = gui.CTkFrame(master=window,corner_radius=0)
+#side bar logs
+frame_Log = gui.CTkFrame(master=window, height=220, width=160, corner_radius=0)
 frame_Log.grid(row=1, column = 1,padx=0, pady=0)
-
 frame_Log = gui.CTkLabel(master=frame_Log, text="Information")
 frame_Log.grid(row=1, column = 0, padx=0, pady=20)
 frame_filestatus = gui.CTkLabel(master=frame_Log, text = "No file selected.") 
@@ -159,6 +159,7 @@ frame_status.grid(row=2, column=0)
 button_exit= gui.CTkButton(master=frame_Log, text = "Exit", command=exit)
 button_exit.grid(row= 3, column=0,padx=50, pady=25)
 
+# menu
 button_option = gui.CTkSegmentedButton(master=window,values=["  Compression level   ","  Help  "],command=command_function)
 button_option.grid(row=0, column = 0,padx=0, pady=10)
 
