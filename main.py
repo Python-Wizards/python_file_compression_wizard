@@ -10,7 +10,7 @@ prog_ver="0.3RC"
 import customtkinter as gui
 from tkinter.filedialog import askopenfilename
 # Import "zipfile","datetime" and "os" module from python
-import zipfile,datetime,os
+import sys,zipfile,datetime,os
 
 # Set GUI theme
 gui.set_appearance_mode("dark")
@@ -124,13 +124,17 @@ def explore(zip_name):
     explore_window.configure(bg = '#1a1a1a')
     explore_window.title("Explore")
     explore_window.resizable(False,False)
-    with zipfile.ZipFile(zip_name, mode="r") as archive:
-        for info in archive.infolist():
-            print(f"Filename: {info.filename}")
-            print(f"Modified: {datetime.datetime(*info.date_time)}")
-            print(f"Normal size: {info.file_size} bytes")
-            print(f"Compressed size: {info.compress_size} bytes")
-    explore_text = gui.CTkLabel(master=explore_window, text="None")
+    with open ("fileinfo",'a') as sys.stdout:
+        with zipfile.ZipFile(zip_name, mode="r") as archive:
+            for info in archive.infolist():
+                print(f"\nFile inside: {info.filename}")
+                print(f"Modified: {datetime.datetime(*info.date_time)}")
+                print(f"Normal size: {info.file_size} bytes")
+                print(f"Compressed size: {info.compress_size} bytes")
+    with open("fileinfo",'r') as fileinfotxt:
+        fileinfo=fileinfotxt.read()
+    explore_text=gui.CTkLabel(explore_window, text=" "+fileinfo)
+    os.remove("fileinfo")
     explore_text.grid(row=0, column=2, padx=20, pady=0)
 
 #side bar buttons
