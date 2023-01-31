@@ -8,9 +8,11 @@ prog_ver="0.3RC"
 
 # Import front-end framework
 import customtkinter as gui
-from tkinter.filedialog import askopenfilename
 # Import "zipfile","datetime" and "os" module from python
 import sys,zipfile,datetime,os
+
+from tkinter.filedialog import askopenfilename
+from PIL import Image
 
 # Set GUI theme
 gui.set_appearance_mode("dark")
@@ -75,7 +77,7 @@ def command_function(value):
         if value == "  Compression level   ":
             Compression_lvl()
             button_option.set("None")
-        elif value == "  Help  ":
+        elif value == "  Help   ":
             prog_help()
             button_option.set("None")
 
@@ -153,7 +155,7 @@ button_explore = gui.CTkButton(master = frame, text="Explore File", command = la
 button_explore.grid(row=6, column=0, padx=25, pady=10)
 
 #side bar logs
-frame_Log = gui.CTkFrame(master=window, height=250, width=241, corner_radius=0)
+frame_Log = gui.CTkFrame(master=window, height=250, width=245, corner_radius=0)
 frame_Log.grid(row=1, column = 1,padx=0, pady=0)
 frame_Log.grid_propagate(False)
 frame_Log = gui.CTkLabel(master=frame_Log, text="Information")
@@ -166,8 +168,12 @@ button_exit= gui.CTkButton(master=frame_Log, text = "Exit", command=exit)
 button_exit.grid(row= 3, column=0,padx=50, pady=25)
 
 # menu
-button_option = gui.CTkSegmentedButton(master=window,values=["  Compression level   ","  Help  "],command=command_function)
+button_option = gui.CTkSegmentedButton(master=window,values=["  Compression level   ","  Help   "],command=command_function)
 button_option.grid(row=0, column = 0,padx=0, pady=10)
 
+# logo
+tuplogo = gui.CTkImage(light_image=Image.open("res/logo.png"), dark_image=Image.open("res/logo.png"),size=(20, 20))
+logo = gui.CTkButton(master = window, image=tuplogo, text="TUP - Manila Campus", fg_color="transparent", hover=False)
+logo.grid(row=0, column=1, padx=0, pady=10)
 window.resizable(False, False)
 window.mainloop()
