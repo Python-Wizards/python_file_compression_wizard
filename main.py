@@ -32,7 +32,13 @@ def file_browser(event=None):
     if filenm=="":
         frame_filestatus.configure(text="No file selected.")
     else:
-        frame_filestatus.configure(text="To compress : "+filenm)
+        filenmtruncate = (filenm[:12] + '..') if len(filenm) > 12 else filenm
+        split_flex=os.path.splitext(filenm)
+        file_extension=split_flex[1]
+        if len(filenm)>12:
+            frame_filestatus.configure(text="To compress : "+filenmtruncate+file_extension)
+        else:
+            frame_filestatus.configure(text="To compress : "+filenmtruncate)
         frame_filestatus.grid(pady=8)
 
 # compress_file definition/function
