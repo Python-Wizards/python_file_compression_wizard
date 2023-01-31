@@ -112,7 +112,7 @@ def Compression_lvl():
     compress_button.grid(row=7, column=2,padx=10, pady =10)
 
 def prog_help():
-    with open('README.md','r') as f:
+    with open('res/help.txt','r') as f:
         help = f.read()
     help_window = gui.CTkToplevel(window)
     help_window.configure(bg = '#1a1a1a')
