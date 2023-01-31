@@ -1,6 +1,19 @@
 #!/usr/bin/python
-# basic file compression/decompression program using zipfile module
-# please take note that the program uses comments for now to execute specific def.
+#
+# CompressorWiz
+# Group Project for a File Compression/Decompression using Python Language with TKinter GUI frontend.
+#
+## Members:
+### Gwen Regulacion
+### Angela Gallo
+### John Paul Marfil
+### Jedd Rasco
+### Angelo Kim Hui Lim
+#
+## Dependencies
+# Please install the following dependencies from PIP:
+### customtkinter
+### Pillow
 
 # Declare important program variables
 prog_nm="CompressorWiz"
