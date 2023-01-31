@@ -138,8 +138,9 @@ def explore(zip_name):
     explore_text.grid(row=0, column=2, padx=20, pady=0)
 
 #side bar buttons
-frame = gui.CTkFrame(master=window, height=220, width=160, corner_radius=0)
+frame = gui.CTkFrame(master=window, height=250, width=191, corner_radius=0)
 frame.grid(row=1, column = 0,padx=20, pady=10)
+frame.grid_propagate(False)
 header = gui.CTkLabel(master=frame, text=prog_nm+"-("+prog_ver+")")
 header.grid(row=1, column = 0, padx=20, pady=10)
 button_select = gui.CTkButton(master = frame, text="Select File", command = file_browser)
@@ -152,8 +153,9 @@ button_explore = gui.CTkButton(master = frame, text="Explore File", command = la
 button_explore.grid(row=6, column=0, padx=25, pady=10)
 
 #side bar logs
-frame_Log = gui.CTkFrame(master=window, height=220, width=160, corner_radius=0)
+frame_Log = gui.CTkFrame(master=window, height=250, width=241, corner_radius=0)
 frame_Log.grid(row=1, column = 1,padx=0, pady=0)
+frame_Log.grid_propagate(False)
 frame_Log = gui.CTkLabel(master=frame_Log, text="Information")
 frame_Log.grid(row=1, column = 0, padx=0, pady=20)
 frame_filestatus = gui.CTkLabel(master=frame_Log, text = "No file selected.") 
