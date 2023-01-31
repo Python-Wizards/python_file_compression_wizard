@@ -4,7 +4,7 @@
 
 # Declare important program variables
 prog_nm="CompressorWiz"
-prog_ver="0.3RC"
+prog_ver="v1.0"
 
 # Import front-end framework
 import customtkinter as gui
